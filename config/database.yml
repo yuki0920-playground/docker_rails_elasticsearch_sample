@@ -20,10 +20,15 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  # ユーザーとパスワードを追加追加
+  username: <%= ENV.fetch('POSTGRES_USER') { 'postgres' } %>
+  password: <%= ENV.fetch('POSTGRES_PASSWORD') { 'password' } %>
 
 development:
   <<: *default
   database: myapp_development
+  # railsコンテナに設定した DATABASE_HOST をホストに設定
+  host: &development_host <%= ENV.fetch('DATABASE_HOST') { 'localhost' } %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -58,7 +63,8 @@ development:
 test:
   <<: *default
   database: myapp_test
-
+  # railsコンテナに設定した DATABASE_HOST をホストに設定
+  host: *development_host
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
 # ever seen by anyone, they now have access to your database.
